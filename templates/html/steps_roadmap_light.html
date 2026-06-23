@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Steps Roadmap</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.canvas { padding: 28px 50px; }
+.head { background: linear-gradient(135deg, #ed64a6 0%, #805ad5 50%, #3182ce 100%); padding: 14px 24px; border-radius: 12px; font-size: 28px; font-weight: 900; margin-bottom: 20px; color: #fff; text-align: center; box-shadow: 0 4px 20px rgba(128, 90, 213, 0.25); }
+.steps { display: flex; flex-direction: column; gap: 14px; }
+.step { display: flex; gap: 18px; align-items: stretch; }
+.step-num { flex-shrink: 0; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.step-body { flex: 1; background: #fff; border: 2px solid #edf2f7; border-radius: 12px; padding: 12px 18px; box-shadow: 0 2px 10px rgba(45,55,72,0.05); }
+.step-label { font-size: 14px; font-weight: 900; padding: 4px 12px; border-radius: 6px; display: inline-block; margin-bottom: 6px; color: #fff; }
+.step-title { font-size: 26px; font-weight: 900; line-height: 1.2; color: #1a202c; }
+.step-tools { font-size: 16px; color: #718096; margin-top: 4px; font-weight: 700; }
+.step-result { background: #f7fafc; border-radius: 8px; padding: 8px 14px; margin-top: 8px; font-size: 16px; font-weight: 700; color: #2d3748; }
+.s1 .step-num { background: linear-gradient(135deg, #f687b3 0%, #d53f8c 100%); }
+.s2 .step-num { background: linear-gradient(135deg, #fbd38d 0%, #ed8936 100%); }
+.s3 .step-num { background: linear-gradient(135deg, #9ae6b4 0%, #38a169 100%); }
+.s4 .step-num { background: linear-gradient(135deg, #faf089 0%, #d69e2e 100%); }
+.s5 .step-num { background: linear-gradient(135deg, #90cdf4 0%, #3182ce 100%); }
+.s1 .step-label { background: #d53f8c; }
+.s2 .step-label { background: #ed8936; }
+.s3 .step-label { background: #38a169; }
+.s4 .step-label { background: #d69e2e; }
+.s5 .step-label { background: #3182ce; }
+.s1 .step-body { border-left: 6px solid #d53f8c; }
+.s2 .step-body { border-left: 6px solid #ed8936; }
+.s3 .step-body { border-left: 6px solid #38a169; }
+.s4 .step-body { border-left: 6px solid #d69e2e; }
+.s5 .step-body { border-left: 6px solid #3182ce; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="head" id="title">🚀 AI×物販 完全自動化フロー</div>
+  <div class="steps" id="steps">
+    <div class="step s1"><div class="step-num">1</div><div class="step-body"><span class="step-label">STEP 1 / リサーチ</span><div class="step-title">商品リサーチを完全自動化</div><div class="step-tools">✱ ChatGPT × Googleトレンド × Keepa</div><div class="step-result">⚡ 手動2〜3時間 → AIで30秒</div></div></div>
+    <div class="step s2"><div class="step-num">2</div><div class="step-body"><span class="step-label">STEP 2 / 仕入れ判断</span><div class="step-title">AIが仕入れをスコアリング</div><div class="step-tools">✱ ChatGPT × Keepa × SellerSprite</div><div class="step-result">📊 赤字仕入れがほぼゼロに</div></div></div>
+    <div class="step s3"><div class="step-num">3</div><div class="step-body"><span class="step-label">STEP 3 / 出品作業</span><div class="step-title">商品ページを1分で自動生成</div><div class="step-tools">✱ ChatGPT × Canva AI × Transmonkey</div><div class="step-result">🎯 1商品10分 → 1分以内（90%削減）</div></div></div>
+  </div>
+</div>
+</body>
+</html>

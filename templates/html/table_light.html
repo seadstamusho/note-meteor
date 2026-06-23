@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Table</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.canvas { padding: 28px 50px; }
+.head { background: linear-gradient(135deg, #ed64a6 0%, #805ad5 50%, #3182ce 100%); padding: 14px 24px; border-radius: 12px; font-size: 30px; font-weight: 900; margin-bottom: 24px; text-align: center; color: #fff; box-shadow: 0 4px 20px rgba(128, 90, 213, 0.25); }
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 4px 16px rgba(45,55,72,0.08); }
+.tbl thead { background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); }
+.tbl th { padding: 18px 20px; font-size: 22px; font-weight: 900; text-align: left; color: #2d3748; border-bottom: 3px solid #805ad5; }
+.tbl td { padding: 16px 20px; font-size: 20px; font-weight: 700; border-bottom: 1px solid #edf2f7; color: #2d3748; }
+.tbl tbody tr:nth-child(even) { background: #f7fafc; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl td:first-child { color: #805ad5; font-weight: 900; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="head" id="title">代表的なプラットフォーム比較</div>
+  <table class="tbl" id="tbl">
+    <thead><tr><th>プラットフォーム</th><th>特徴</th><th>向いている人</th></tr></thead>
+    <tbody>
+      <tr><td>Amazon</td><td>最大規模・信頼度高</td><td>安定収益狙い</td></tr>
+      <tr><td>メルカリ</td><td>手軽・回転速い</td><td>初心者向け</td></tr>
+      <tr><td>ヤフオク</td><td>オークション形式</td><td>希少品扱い</td></tr>
+      <tr><td>eBay</td><td>海外市場・高利益</td><td>グローバル狙い</td></tr>
+      <tr><td>楽天</td><td>ブランド力強い</td><td>独自ブランド育成</td></tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

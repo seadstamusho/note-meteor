@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.left { position: absolute; top: 60px; left: 40px; right: 580px; bottom: 40px; }
+.right { position: absolute; top: 60px; right: 40px; width: 500px; bottom: 40px; display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+.title { font-size: 96px; font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-top: 28px; background: linear-gradient(135deg, #ed64a6 0%, #805ad5 50%, #3182ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { font-size: 36px; font-weight: 900; margin-top: 24px; color: #2d3748; }
+.bullet { font-size: 22px; font-weight: 700; margin-top: 14px; color: #4a5568; padding-left: 32px; position: relative; }
+.bullet::before { content: '✓'; position: absolute; left: 0; color: #38a169; font-weight: 900; font-size: 26px; }
+.year { position: absolute; top: 30px; right: 40px; font-size: 16px; font-weight: 900; padding: 8px 18px; border-radius: 999px; background: linear-gradient(135deg, #f687b3 0%, #d53f8c 100%); color: #fff; }
+.kpi { background: #fff; border: 2px solid #edf2f7; border-radius: 18px; padding: 20px 24px; display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 20px rgba(45, 55, 72, 0.08); }
+.kpi.k1 { border-left: 6px solid #805ad5; }
+.kpi.k2 { border-left: 6px solid #3182ce; }
+.kpi.k3 { border-left: 6px solid #dd6b20; }
+.kpi-icon { font-size: 38px; }
+.kpi-body { flex: 1; }
+.kpi-label { font-size: 15px; color: #718096; font-weight: 700; }
+.kpi-value { font-size: 36px; font-weight: 900; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="year" id="year">2026年 最新版</div>
+  <div class="left">
+    <div class="badge" id="badge">完全自動化で稼ぐ</div>
+    <div class="title" id="title">AI×物販</div>
+    <div class="subtitle" id="subtitle">月収10万→100万への最短ルート</div>
+    <div class="bullet" id="b1">出品作業が10分→1分に短縮</div>
+    <div class="bullet" id="b2">赤字仕入れがほぼゼロに</div>
+    <div class="bullet" id="b3">旅行中でも売上が発生する仕組み</div>
+  </div>
+  <div class="right">
+    <div class="kpi k1"><div class="kpi-icon">⚡</div><div class="kpi-body"><div class="kpi-label" id="k1l">出品時間の削減率</div><div class="kpi-value accent-purple" id="k1v">90%削減</div></div></div>
+    <div class="kpi k2"><div class="kpi-icon">📈</div><div class="kpi-body"><div class="kpi-label" id="k2l">月間出品数（AI導入後）</div><div class="kpi-value accent-blue" id="k2v">15倍</div></div></div>
+    <div class="kpi k3"><div class="kpi-icon">💰</div><div class="kpi-body"><div class="kpi-label" id="k3l">事例：5ヶ月後の月収</div><div class="kpi-value accent-orange" id="k3v">40万円</div></div></div>
+  </div>
+</div>
+</body>
+</html>

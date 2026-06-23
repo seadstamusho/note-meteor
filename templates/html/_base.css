@@ -1,0 +1,61 @@
+/* 共通スタイル — 白基調 + カラフルアクセント */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1280px;
+  height: 720px;
+  font-family: 'Noto Sans JP', 'Yu Gothic', 'YuGothic', 'Hiragino Sans', sans-serif;
+  background: #ffffff;
+  color: #1a202c;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 32px 40px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(237, 100, 166, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(102, 126, 234, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(246, 173, 85, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(104, 211, 145, 0.08) 0%, transparent 40%),
+    #ffffff;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 16px rgba(45, 55, 72, 0.06);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.accent-purple { color: #805ad5; }
+.accent-pink   { color: #d53f8c; }
+.accent-orange { color: #dd6b20; }
+.accent-green  { color: #38a169; }
+.accent-blue   { color: #3182ce; }
+.accent-red    { color: #e53e3e; }
+.accent-yellow { color: #d69e2e; }
+
+.bg-purple { background: linear-gradient(135deg, #b794f4 0%, #805ad5 100%); color: #fff; }
+.bg-pink   { background: linear-gradient(135deg, #f687b3 0%, #d53f8c 100%); color: #fff; }
+.bg-orange { background: linear-gradient(135deg, #fbd38d 0%, #ed8936 100%); color: #fff; }
+.bg-green  { background: linear-gradient(135deg, #9ae6b4 0%, #38a169 100%); color: #fff; }
+.bg-blue   { background: linear-gradient(135deg, #90cdf4 0%, #3182ce 100%); color: #fff; }
+.bg-red    { background: linear-gradient(135deg, #feb2b2 0%, #e53e3e 100%); color: #fff; }
+.bg-yellow { background: linear-gradient(135deg, #faf089 0%, #d69e2e 100%); color: #fff; }

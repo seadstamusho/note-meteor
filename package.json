@@ -1,0 +1,26 @@
+{
+  "name": "note-auto-poster",
+  "version": "1.0.0",
+  "description": "note.com automatic article posting tool using Playwright + Cookie authentication",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "login": "node scripts/node/login-note.js",
+    "post:draft": "node scripts/node/publish-hybrid.js",
+    "install-browser": "npx playwright install chromium"
+  },
+  "keywords": [
+    "note.com",
+    "automation",
+    "playwright",
+    "auto-posting"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "playwright": "^1.58.2"
+  }
+}

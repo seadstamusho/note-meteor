@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Compare Card</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.canvas { padding: 28px 50px; }
+.head { background: linear-gradient(135deg, #ed64a6 0%, #805ad5 50%, #3182ce 100%); padding: 14px 24px; border-radius: 12px; font-size: 30px; font-weight: 900; margin-bottom: 24px; text-align: center; color: #fff; box-shadow: 0 4px 20px rgba(128, 90, 213, 0.25); }
+.cols { display: flex; gap: 22px; align-items: stretch; height: 540px; }
+.col { flex: 1; border-radius: 18px; padding: 20px 26px; display: flex; flex-direction: column; background: #fff; box-shadow: 0 4px 16px rgba(45,55,72,0.08); }
+.col-left  { border-top: 8px solid #e53e3e; }
+.col-right { border-top: 8px solid #38a169; }
+.col-title { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 900; padding-bottom: 14px; border-bottom: 2px solid #edf2f7; margin-bottom: 16px; color: #1a202c; }
+.col-title .pill { padding: 4px 14px; border-radius: 999px; font-size: 16px; font-weight: 900; color: #fff; }
+.col-left .pill  { background: linear-gradient(135deg, #feb2b2 0%, #e53e3e 100%); }
+.col-right .pill { background: linear-gradient(135deg, #9ae6b4 0%, #38a169 100%); }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid #edf2f7; font-size: 18px; }
+.row:last-child { border-bottom: none; }
+.row .k { color: #718096; font-weight: 700; }
+.row .v { font-weight: 900; }
+.col-left .v  { color: #c53030; }
+.col-right .v { color: #2f855a; font-size: 20px; }
+.vs { display: flex; align-items: center; justify-content: center; width: 70px; flex-shrink: 0; }
+.vs-circle { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #fbd38d 0%, #ed8936 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #fff; box-shadow: 0 4px 20px rgba(237, 137, 54, 0.4); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="head" id="title">📊 AI導入 Before / After 比較</div>
+  <div class="cols">
+    <div class="col col-left">
+      <div class="col-title">😩 <span class="pill" id="lt">AI導入前</span></div>
+      <div id="left-rows">
+        <div class="row"><span class="k">商品リサーチ時間</span><span class="v">2〜3時間</span></div>
+        <div class="row"><span class="k">1商品の出品時間</span><span class="v">10〜20分</span></div>
+        <div class="row"><span class="k">画像翻訳（中国輸入）</span><span class="v">30分/枚</span></div>
+        <div class="row"><span class="k">月間出品数</span><span class="v">10商品</span></div>
+        <div class="row"><span class="k">赤字仕入れリスク</span><span class="v">高い</span></div>
+        <div class="row"><span class="k">1日の作業時間</span><span class="v">4〜5時間</span></div>
+      </div>
+    </div>
+    <div class="vs"><div class="vs-circle">VS</div></div>
+    <div class="col col-right">
+      <div class="col-title">🚀 <span class="pill" id="rt">AI導入後</span></div>
+      <div id="right-rows">
+        <div class="row"><span class="k">商品リサーチ時間</span><span class="v">30秒</span></div>
+        <div class="row"><span class="k">1商品の出品時間</span><span class="v">1分以内</span></div>
+        <div class="row"><span class="k">画像翻訳（中国輸入）</span><span class="v">1分/枚</span></div>
+        <div class="row"><span class="k">月間出品数</span><span class="v">150商品</span></div>
+        <div class="row"><span class="k">赤字仕入れリスク</span><span class="v">ほぼゼロ</span></div>
+        <div class="row"><span class="k">1日の作業時間</span><span class="v">1〜1.5時間</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
