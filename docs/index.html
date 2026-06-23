@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>note-meteor — AIで記事を隕石のように落とす</title>
+  <style>
+    :root {
+      --bg: #080818;
+      --surface: #0f0f2e;
+      --card: #14143a;
+      --accent: #f97316;
+      --accent2: #facc15;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(249,115,22,0.25);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ===== 星 パーティクル ===== */
+    #canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== ヒーロー ===== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      animation: fadeDown 0.9s 0.1s ease both;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--muted);
+      margin-top: 1.2rem;
+      max-width: 520px;
+      line-height: 1.8;
+      animation: fadeDown 1s 0.2s ease both;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeDown 1s 0.35s ease both;
+    }
+
+    .btn {
+      padding: 0.85rem 2rem;
+      border-radius: 0.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #000;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,0.3); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .scroll-hint::after {
+      content: '▼';
+      display: block;
+      text-align: center;
+      margin-top: 0.3rem;
+    }
+
+    /* ===== セクション共通 ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ===== 統計 ===== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem auto;
+      max-width: 700px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); }
+
+    .stat-num {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ===== 特徴カード ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.8rem;
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.2s;
+    }
+    .feature-card:nth-child(even) { transform: translateX(60px); }
+    .feature-card.visible { opacity: 1; transform: translateX(0); }
+    .feature-card:hover { box-shadow: 0 0 24px rgba(249,115,22,0.2); }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ===== セットアップ ===== */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .step.visible { opacity: 1; transform: translateY(0); }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #000;
+      font-weight: 900;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-body { flex: 1; }
+    .step-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .step-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+
+    .code-block {
+      background: #0a0a1f;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.5rem;
+      padding: 0.8rem 1rem;
+      margin-top: 0.6rem;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: var(--accent2);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .code-block::after {
+      content: 'コピー';
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--card);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.3rem;
+      font-family: sans-serif;
+    }
+    .code-block:hover::after { color: var(--accent); }
+    .code-block.copied::after { content: '✓ コピー済み'; color: #4ade80; }
+
+    /* ===== FAQ ===== */
+    .faq-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .faq-item.visible { opacity: 1; transform: translateY(0); }
+
+    .faq-q {
+      padding: 1.2rem 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-q::after { content: '＋'; color: var(--accent); font-size: 1.2rem; transition: transform 0.3s; }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      padding: 0 1.5rem;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding: 0 1.5rem 1.2rem; }
+
+    /* ===== フッター ===== */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ===== アニメーション ===== */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="badge">☄ Claude Code スキル — APIキー不要</div>
+  <h1>記事を、<br><span>隕石のように</span>落とせ。</h1>
+  <p class="hero-sub">テーマを渡すだけで、リサーチ・執筆・画像生成・note投稿まで全自動。<br>夏目隕石が開発した、Claude Code専用の投稿自動化スキルです。</p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="https://github.com/seadstamusho/note-meteor" target="_blank">GitHubで見る</a>
+    <a class="btn btn-ghost" href="#setup">セットアップ手順</a>
+  </div>
+  <div class="scroll-hint">スクロール</div>
+</div>
+
+<!-- 統計 -->
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-num" data-count="0">0</div>
+    <div class="stat-label">APIキー</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" data-count="8">0</div>
+    <div class="stat-label">自動化フェーズ数</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" data-count="1">0</div>
+    <div class="stat-label">手動ステップ（初回のみ）</div>
+  </div>
+</div>
+
+<!-- 特徴 -->
+<section>
+  <div class="section-label">Features</div>
+  <h2>何ができるのか</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Web リサーチ自動化</div>
+      <div class="feature-desc">テーマに沿った最新情報をWebから自動収集。出典URL付きで事実確認済みの記事を生成します。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <div class="feature-title">本文・見出し・太字まで自動生成</div>
+      <div class="feature-desc">H2/H3見出し、箇条書き、太字対応。note.comのエディターに直接書き込みます。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖼️</div>
+      <div class="feature-title">サムネ＆図解を自動生成</div>
+      <div class="feature-desc">HTMLテンプレートからサムネイルと差し込み画像を自動生成。Codex CLIにも対応。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <div class="feature-title">note.comへ直接下書き投稿</div>
+      <div class="feature-desc">APIキー不要。ブラウザのログインセッションだけで動作。下書き保存後にハッシュタグをターミナルに出力します。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">初回セットアップも自動</div>
+      <div class="feature-desc">npm install や Playwright インストールはClaude Codeが自動実行。手動操作は最初のログインのみ。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">機密情報はGitに含まれない</div>
+      <div class="feature-desc">.gitignore 設定済みで、ログインセッションファイル・.envは自動で除外。安全に配布できます。</div>
+    </div>
+  </div>
+</section>
+
+<!-- セットアップ -->
+<section id="setup">
+  <div class="section-label">Setup</div>
+  <h2>セットアップ手順</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">リポジトリをクローン</div>
+        <div class="step-desc">Claude Codeのチャット欄に以下をそのまま貼り付けてEnterを押してください。</div>
+        <div class="code-block" onclick="copyCode(this)">! git clone https://github.com/seadstamusho/note-meteor.git</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">スキルを起動する</div>
+        <div class="step-desc">チャット欄でスキルを呼び出すと、npm install・Playwright インストールを自動で実行します。</div>
+        <div class="code-block" onclick="copyCode(this)">note-meteorスキルを使って「〇〇について」という記事を書いて</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">note.com にログイン（初回のみ）</div>
+        <div class="step-desc">スキルの案内に従い、チャット欄に以下を入力してEnterを押すとブラウザが開きます。いつも通りログインして閉じてください。</div>
+        <div class="code-block" onclick="copyCode(this)">! npm run login</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">あとはおまかせ</div>
+        <div class="step-desc">リサーチ → 執筆 → 画像生成 → note.com下書き投稿まで自動で進みます。完了後にハッシュタグが表示されるので、コピペして公開設定から貼り付けてください。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="section-label">FAQ</div>
+  <h2>よくある質問</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">APIキーは必要ですか？</div>
+      <div class="faq-a">不要です。note.comへのアクセスはブラウザのログインセッション（Cookie）を使います。Geminiも使いません。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">ログインは毎回必要ですか？</div>
+      <div class="faq-a">初回のみです。セッション情報がローカルに保存されるため、2回目以降は自動的にログイン済み状態で投稿できます。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">ハッシュタグが自動で設定されないのはなぜ？</div>
+      <div class="faq-a">noteのUI変更によりPlaywrightでの自動入力が困難になりました。代わりに、完了後にターミナルへハッシュタグ一覧を出力します。コピペで一撃です。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">「！」（感嘆符）は何のために使うの？</div>
+      <div class="faq-a">Claude Codeのチャット欄で「!」をつけるとターミナルコマンドとして実行されます。「! npm run login」と入力することで、別のターミナルを開かずに操作できます。</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>note-meteor — by <a href="https://note.com/" target="_blank">夏目隕石</a></p>
+  <p style="margin-top:0.5rem"><a href="https://github.com/seadstamusho/note-meteor" target="_blank">GitHub</a></p>
+</footer>
+
+<script>
+  // ===== 隕石パーティクル =====
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, meteors = [], stars = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 星を初期化
+  for (let i = 0; i < 180; i++) {
+    stars.push({
+      x: Math.random() * 9999,
+      y: Math.random() * 9999,
+      r: Math.random() * 1.2 + 0.3,
+      a: Math.random()
+    });
+  }
+
+  function spawnMeteor() {
+    meteors.push({
+      x: Math.random() * W * 1.5,
+      y: -20,
+      vx: -4 - Math.random() * 4,
+      vy: 3 + Math.random() * 4,
+      len: 80 + Math.random() * 120,
+      alpha: 1,
+      w: 1.5 + Math.random() * 1.5
+    });
+  }
+
+  setInterval(spawnMeteor, 1800);
+  spawnMeteor();
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.005;
+
+    // 星
+    for (const s of stars) {
+      ctx.beginPath();
+      ctx.arc(s.x % W, s.y % H, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${0.3 + 0.3 * Math.sin(t + s.a * 10)})`;
+      ctx.fill();
+    }
+
+    // 隕石
+    meteors = meteors.filter(m => m.alpha > 0.02);
+    for (const m of meteors) {
+      const grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * m.len / 5, m.y - m.vy * m.len / 5);
+      grad.addColorStop(0, `rgba(249,200,100,${m.alpha})`);
+      grad.addColorStop(1, `rgba(249,115,22,0)`);
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(m.x - m.vx * m.len / 5, m.y - m.vy * m.len / 5);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = m.w;
+      ctx.stroke();
+      m.x += m.vx;
+      m.y += m.vy;
+      m.alpha -= 0.012;
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  // ===== スクロールアニメーション =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 120);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.feature-card, .step, .faq-item').forEach(el => observer.observe(el));
+
+  // ===== 数字カウントアップ =====
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.count);
+      let cur = 0;
+      const step = Math.max(1, Math.ceil(target / 30));
+      const timer = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = cur;
+        if (cur >= target) clearInterval(timer);
+      }, 40);
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+  // ===== コードコピー =====
+  function copyCode(el) {
+    const text = el.textContent.replace('コピー', '').replace('✓ コピー済み', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 2000);
+    });
+  }
+
+  // ===== FAQ =====
+  function toggleFaq(el) {
+    el.parentElement.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
